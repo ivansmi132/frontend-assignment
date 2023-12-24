@@ -1,0 +1,38 @@
+*, body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.form-cls {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 500px;
+    margin:auto;
+}
+
+.preview-image-container > img {
+    display: block;
+    margin:auto;
+}
+
+.form-container {
+    text-align: center;
+}
+
+.single-post-body {
+    max-width: 980px;
+    margin:auto;
+}
+
+.single-post-body > img {
+    display:block;
+    margin:auto;
+    max-height: 250px;
+    padding-bottom: 3%;
+}
+
+a:hover{
+    color: tomato !important;
+}
