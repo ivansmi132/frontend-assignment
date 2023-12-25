@@ -6,10 +6,10 @@ export const BlogPostsContext = createContext(null);
 export function BlogPostsProvider({children}) {
     const [postsList, setPostsList] = useState([]);
     // preview state is used by addPostForm to display a preview of an image, from an existing post or the file input
-    const [preview, setPreview] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
 
-    function changePreviewImage(data){
-        setPreview(data);
+    function setNewImage(file){
+        setImageFile(file);
     }
 
     function getPostById(id) {
@@ -54,7 +54,7 @@ export function BlogPostsProvider({children}) {
         ));
     }
 
-    const value = {postsList, addPost, deletePost, getPostById, preview, changePreviewImage, loadPosts}
+    const value = {postsList, addPost, deletePost, getPostById, imageFile, setNewImage, loadPosts, setImageFile}
 
     return (
         <BlogPostsContext.Provider value={value}>

@@ -6,21 +6,19 @@ import {useNavigate} from "react-router-dom";
 
 
 export function AddPostForm() {
-    const {addPost, preview, changePreviewImage, loadPosts} = useContext(BlogPostsContext);
+    const {addPost, imageFile, setNewImage, loadPosts} = useContext(BlogPostsContext);
     const submitBtn = useRef();
     const navigate = useNavigate();
 
-    // since I store the image preview in a global context, and it is shared between the EditPostForm and AddPostForm
-    // we want to reset the preview image when the component is dismounted
+    // since I store the image file in a global context, and it is shared between the EditPostForm and AddPostForm
+    // we want to reset it when the component is dismounted in case the user did not submit a new post
+
     useEffect(() => {
-        return () => {changePreviewImage(null)};
+        return (() => setNewImage(null));
     }, []);
-
-
     function onSubmit(data) {
-        data.image = data.image[0];
+        data.image = imageFile;
         addPost(data);
-        changePreviewImage(null)
         navigate("/posts/");
     }
 
@@ -30,14 +28,15 @@ export function AddPostForm() {
 
             <Form onSubmit={onSubmit}>
                 <label>Title:</label>
-                <Textarea name="title" maxlength={"80"} rows={3}/>
+                <Textarea name="title" maxLength={"80"} rows={3}/>
                 <label>Body:</label>
                 <Textarea name="body" rows={10}/>
                 <ImageInput name="image"/>
                 <input ref={submitBtn} type="submit" value="Add post" style={{display: "none"}}/>
             </Form>
 
-            {preview && <div className={"preview-image-container"}><img src={preview} alt={"preview"} width={200}/></div>}
+            {imageFile && <div className={"preview-image-container"}><img src={URL.createObjectURL(imageFile)} alt={"preview"} width={200}/></div>}
+            {imageFile && <button onClick={() => setNewImage(null)}>remove photo</button>}
 
             <div className={"admin-nav"}>
                 <button onClick={() => {loadPosts(); navigate("/posts/");}}>Load Posts</button>
@@ -48,4 +47,3 @@ export function AddPostForm() {
     )
 }
 
-// removing an image functionality will be implemented in the future

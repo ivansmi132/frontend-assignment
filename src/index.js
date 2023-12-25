@@ -8,13 +8,11 @@ import {BlogPostsProvider} from "./providers/blogposts-provider";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
       <UserContextProvider>
           <BlogPostsProvider>
-    <RouterProvider router={router} />
+                <RouterProvider router={router} />
           </BlogPostsProvider>
       </UserContextProvider>
-  </React.StrictMode>
 );
 
 

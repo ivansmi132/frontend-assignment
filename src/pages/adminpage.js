@@ -2,7 +2,7 @@ import {useContext} from "react";
 import {UserContext} from "../providers/auth-provider";
 import {Link, Outlet} from "react-router-dom";
 import {NavigationBar} from "../components/navigation-bar/navbar";
-import {Footer} from "../components/footer/footer";
+
 
 export function AdminPage() {
     const {user} = useContext(UserContext);
