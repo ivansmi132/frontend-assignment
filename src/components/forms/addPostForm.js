@@ -10,17 +10,20 @@ export function AddPostForm() {
     const submitBtn = useRef();
     const navigate = useNavigate();
 
-    // since I store the image file in a global context, and it is shared between the EditPostForm and AddPostForm
-    // we want to reset it when the component is dismounted in case the user did not submit a new post
 
+    // since I store the image file in a global context, and it is shared between the EditPostForm and AddPostForm
+    // we want to reset it when the component is dismounted whether the post addition went through or not
     useEffect(() => {
         return (() => setNewImage(null));
     }, []);
+
+
     function onSubmit(data) {
         data.image = imageFile;
         addPost(data);
         navigate("/posts/");
     }
+
 
     // pay attention that the Form is a custom component from "form-components"
     return (
@@ -34,9 +37,6 @@ export function AddPostForm() {
                 <ImageInput name="image"/>
                 <input ref={submitBtn} type="submit" value="Add post" style={{display: "none"}}/>
             </Form>
-
-            {imageFile && <div className={"preview-image-container"}><img src={URL.createObjectURL(imageFile)} alt={"preview"} width={200}/></div>}
-            {imageFile && <button onClick={() => setNewImage(null)}>remove photo</button>}
 
             <div className={"admin-nav"}>
                 <button onClick={() => {loadPosts(); navigate("/posts/");}}>Load Posts</button>

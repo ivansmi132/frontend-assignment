@@ -23,7 +23,7 @@ export function Textarea({register, name, errors, ...rest}) {
 }
 
 export function ImageInput({register, name, ...rest}) {
-    const {setNewImage} = useContext(BlogPostsContext);
+    const {imageFile, setNewImage} = useContext(BlogPostsContext);
 
     function onImageChange(evt) {
         const currentImage = evt.target.files[0];
@@ -31,7 +31,17 @@ export function ImageInput({register, name, ...rest}) {
     }
 
     return (
-        <input type="file" accept="image/*" {...register(name)} {...rest} onChange={onImageChange}/>
+        <>
+            <input type="file" accept="image/*" {...register(name)} {...rest} onChange={onImageChange}/>
+            {imageFile && (
+                    <>
+                        <div className={"preview-image-container"}>
+                            <img src={URL.createObjectURL(imageFile)} alt={"preview"} width={200}/>
+                        </div>
+                        <button onClick={() => setNewImage(null)}>remove photo</button>
+                    </>
+            )}
+        </>
     )
 }
 

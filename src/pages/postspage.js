@@ -13,8 +13,7 @@ export function PostsPage() {
     }
 
     return (
-        <div>
-
+        <>
             <Header maintext={"Posts"} subtext={`Number of posts: ${postsList.length}`}></Header>
 
             <div className={"main-section"}>
@@ -28,10 +27,10 @@ export function PostsPage() {
                 )}
                 <div className={"posts-list"}>
                     {postsList.filter(post => post.title.toLowerCase().includes(query.toLowerCase())).map((post) =>
-                        <PostCard
-                            postData={post}/>)}
+                        <PostCard postData={post}/>
+                    )}
                 </div>
             </div>
-        </div>
+        </>
     );
 }
