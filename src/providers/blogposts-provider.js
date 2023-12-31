@@ -1,15 +1,14 @@
 import {createContext, useState} from "react";
 
-// BlogPosts context is used to share the postsList state as well as the image preview state with the whole app
+// BlogPosts context is used to share the postsList state as well as the current imageFile state with the whole app
 export const BlogPostsContext = createContext(null);
 
 export function BlogPostsProvider({children}) {
     const [postsList, setPostsList] = useState([]);
-    // preview state is used by addPostForm to display a preview of an image, from an existing post or the file input
-    const [preview, setPreview] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
 
-    function changePreviewImage(data){
-        setPreview(data);
+    function setNewImage(file){
+        setImageFile(file);
     }
 
     function getPostById(id) {
@@ -32,10 +31,10 @@ export function BlogPostsProvider({children}) {
             post.id = new Date().getMilliseconds().toString();
         }
 
-        // the posts fetched from the api are not strings, we work with strings
+        // the post ids fetched from the api are not strings, so we need to convert them
         post.id = post.id.toString();
 
-        // this is so that "load posts" doesn't load posts with existing id
+        // this is so that "load posts" doesn't load posts with that were already fetched
         if (postsList.some(elem => elem.id === post.id)) {return}
 
         post.date = getCurrentDate();
@@ -54,7 +53,7 @@ export function BlogPostsProvider({children}) {
         ));
     }
 
-    const value = {postsList, addPost, deletePost, getPostById, preview, changePreviewImage, loadPosts}
+    const value = {postsList, addPost, deletePost, getPostById, imageFile, setNewImage, loadPosts}
 
     return (
         <BlogPostsContext.Provider value={value}>

@@ -23,20 +23,30 @@ export function Textarea({register, name, errors, ...rest}) {
 }
 
 export function ImageInput({register, name, ...rest}) {
-    const {changePreviewImage} = useContext(BlogPostsContext);
+    const {imageFile, setNewImage} = useContext(BlogPostsContext);
 
     function onImageChange(evt) {
         const currentImage = evt.target.files[0];
-        changePreviewImage(URL.createObjectURL(currentImage));
+        setNewImage(currentImage);
     }
 
     return (
-        <input type="file" accept="image/*" {...register(name)} {...rest} onChange={onImageChange}/>
+        <>
+            <input type="file" accept="image/*" {...register(name)} {...rest} onChange={onImageChange}/>
+            {imageFile && (
+                    <>
+                        <div className={"preview-image-container"}>
+                            <img src={URL.createObjectURL(imageFile)} alt={"preview"} width={200}/>
+                        </div>
+                        <button onClick={() => setNewImage(null)}>remove photo</button>
+                    </>
+            )}
+        </>
     )
 }
 
 export function DropdownSelectPostById({register, name, options, setSelectedPost, ...rest}) {
-    const {postsList, getPostById, changePreviewImage} = useContext(BlogPostsContext);
+    const {postsList, getPostById, setNewImage} = useContext(BlogPostsContext);
 
     function updateSelectedPost(evt) {
 
@@ -46,11 +56,9 @@ export function DropdownSelectPostById({register, name, options, setSelectedPost
         }
 
         const selectedPostFromDropdown = getPostById(evt.target.value);
-        setSelectedPost(selectedPostFromDropdown);
 
-        if (selectedPostFromDropdown.image) {
-            changePreviewImage(URL.createObjectURL(selectedPostFromDropdown.image));
-        } else {changePreviewImage(null)}
+        setSelectedPost(selectedPostFromDropdown);
+        setNewImage(selectedPostFromDropdown.image);
     }
 
     return (

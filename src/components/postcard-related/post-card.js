@@ -17,9 +17,10 @@ export function PostCard ({postData}) {
                 {image && <img src={URL.createObjectURL(image)} alt={'post'}/>}
             </div>
         </div>
-            <div>
+
+        <div>
             <SinglePostMenu post={postData}/>
-            </div>
+        </div>
         </>
     )
 }
