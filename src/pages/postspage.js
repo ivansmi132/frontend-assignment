@@ -1,36 +1,55 @@
-import {useContext, useState} from "react";
+import {useContext, useRef} from "react";
 import {BlogPostsContext} from "../providers/blogposts-provider";
-import {PostCard} from "../components/postcard-related/post-card";
+
+import {PostsList} from "../components/postsList";
 import {Header} from "../components/header/header";
 
 
-export function PostsPage() {
-    const {postsList} = useContext(BlogPostsContext);
-    const [query, setQuery] = useState("");
+
+
+export const PostsPage = (function PostsPage() {
+    const {
+        pagination,
+        setPagination,
+    } = useContext(BlogPostsContext);
+    const postsSection = useRef(null);
+    const searchQuery = useRef();
+
+
+    console.log("postpage up, current:", pagination.current, "query:", pagination.query);
+
+
 
     const handleUserInput = (evt) => {
-        setQuery(evt.target.value);
+        setPagination((prev) => {
+            return {
+                ...prev,
+                current: 1,
+                query: searchQuery.current.value
+            }
+        });
     }
 
     return (
         <>
-            <Header maintext={"Posts"} subtext={`Number of posts: ${postsList.length}`}></Header>
-
-            <div className={"main-section"}>
-                {postsList.length !== 0 && (
-                    <div className={"posts-filter"}>
-                        <h3>Filter posts by title:</h3>
-                        <div>
-                            <input type="text" onChange={handleUserInput}/>
-                        </div>
+            <Header maintext={"posts"}/>
+            <div ref={postsSection} className={"main-section"}>
+                <div className={"posts-filter"}>
+                    <h3>Search post with:</h3>
+                    <div>
+                        <input ref={searchQuery} defaultValue={pagination.query} type="text"/>
+                        <button onClick={handleUserInput}>search</button>
+                        {pagination.query && <button onClick={() => {searchQuery.current.value = ""; setPagination((prev) => {
+                            return {
+                                ...prev,
+                                current: 1,
+                                query: ""
+                            }
+                        });}}>show all</button>}
                     </div>
-                )}
-                <div className={"posts-list"}>
-                    {postsList.filter(post => post.title.toLowerCase().includes(query.toLowerCase())).map((post) =>
-                        <PostCard postData={post}/>
-                    )}
                 </div>
+                <PostsList />
             </div>
         </>
     );
-}
+})

@@ -9,20 +9,22 @@ export function SinglePostMenu({post}) {
 
     return (
         <>
-        {user &&
-            <div className={"single-post-menu"}>
-                <div>
-                    <p>post id: {post.id}</p>
+            {user &&
+                <div className={"single-post-menu"}>
+                    <div>
+                        <p>post id: {post.id}</p>
+                    </div>
+                    <div>
+                        <p>posted by: {post.posted_by}</p>
+                    </div>
+                    <div>
+                        <Link to="../admin/edit_post" state={post.id}>edit</Link>
+                    </div>
+                    <div>
+                        <button onClick={() => deletePost(post.id)}>delete</button>
+                    </div>
                 </div>
-                <div>
-                    <Link to="../admin/edit_post" state={post}>edit</Link>
-                </div>
-                <div>
-                    <button onClick={() => deletePost(post.id)}>delete</button>
-                </div>
-            </div>
-        }
+            }
         </>
     )
 }
-
