@@ -1,34 +1,43 @@
 import {useParams} from "react-router-dom";
-import {useContext} from "react";
-import {BlogPostsContext} from "../providers/blogposts-provider";
+import {useContext, useEffect, useState} from "react";
 import {Header} from "../components/header/header";
 
 import {SinglePostMenu} from "../components/postcard-related/single-post-menu";
+import {BlogPostsContext} from "../providers/blogposts-provider";
+import {Spin} from "antd";
 
 
 export function SinglePostPage() {
     const {id} = useParams();
     const {getPostById} = useContext(BlogPostsContext);
-    const post = getPostById(id);
+    const [currentPost, setCurrentPost] = useState();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getPostById(id).then(post => {setCurrentPost(post); setLoading(false)});
+    }, [])
+
+    if (loading) {
+        return (
+            <div style={{alignItems: "center"}}>
+                <Spin/>
+            </div>
+        )
+    }
 
     return (
-        <>
-            {post ? (
-                <div>
-                    <Header maintext={post.title} subtext={post.date} />
-                    <div className={"main-section"}>
-                        <div className={"single-post-body"}>
-                            {post.image && <img src={URL.createObjectURL(post.image)} alt={'post'}/>}
-                            {post.body}
-                        </div>
-                        <div style={{marginTop: "5%"}}>
-                            <SinglePostMenu post={post}/>
-                        </div>
-                    </div>
-
+        <div>
+            <Header maintext={currentPost.title} subtext={currentPost.creation_date} />
+            <div className={"main-section"}>
+                <div className={"single-post-body"}>
+                    {currentPost.image_url && <img src={currentPost.image_url} alt={'post'}/>}
+                    {currentPost.content}
                 </div>
-            ) : <h3>Post doesn't exist</h3>
-            }
-        </>
+                <div style={{marginTop: "5%"}}>
+                    <SinglePostMenu post={currentPost}/>
+                </div>
+            </div>
+
+        </div>
     )
 }

@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 
 
 export function AddPostForm() {
-    const {addPost, imageFile, setNewImage, loadPosts} = useContext(BlogPostsContext);
+    const {addPost, imageURL, setNewImage} = useContext(BlogPostsContext);
     const submitBtn = useRef();
     const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ export function AddPostForm() {
 
 
     function onSubmit(data) {
-        data.image = imageFile;
+        data.image_url = imageURL;
         addPost(data);
         navigate("/posts/");
     }
@@ -32,18 +32,17 @@ export function AddPostForm() {
             <Form onSubmit={onSubmit}>
                 <label>Title:</label>
                 <Textarea name="title" maxLength={"80"} rows={3}/>
-                <label>Body:</label>
-                <Textarea name="body" rows={10}/>
-                <ImageInput name="image"/>
+                <label>Content:</label>
+                <Textarea name="content" rows={10}/>
+                <ImageInput name="image_url"/>
                 <input ref={submitBtn} type="submit" value="Add post" style={{display: "none"}}/>
             </Form>
 
             <div className={"admin-nav"}>
-                <button onClick={() => {loadPosts(); navigate("/posts/");}}>Load Posts</button>
+                {/*<button onClick={() => {loadPosts(); navigate("/posts/");}}>Load Posts</button>*/}
                 <button onClick={() => submitBtn.current.click()}>Add post</button>
             </div>
 
         </div>
     )
 }
-

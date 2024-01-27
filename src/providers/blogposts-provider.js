@@ -1,59 +1,39 @@
-import {createContext, useState} from "react";
+import {createContext, useContext, useState} from "react";
+import {UserContext} from "./auth-provider";
 
 // BlogPosts context is used to share the postsList state as well as the current imageFile state with the whole app
 export const BlogPostsContext = createContext(null);
 
 export function BlogPostsProvider({children}) {
-    const [postsList, setPostsList] = useState([]);
-    const [imageFile, setImageFile] = useState(null);
+    const [pagination, setPagination] = useState({
+        page: 1,
+        pageSize: 10,
+        query: ""
+    })
+    const [imageURL, setImageFile] = useState(null);
+    const {user} = useContext(UserContext);
 
     function setNewImage(file){
         setImageFile(file);
     }
 
-    function getPostById(id) {
-        const index = postsList.findIndex(post => post.id === id);
-        return postsList[index];
+    async function getPostById(id) {
+        return await fetch(`${process.env.REACT_APP_API_URL}/posts/${id}`).then(data => data.json());
     }
 
-    function getCurrentDate() {
-        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-        const date = new Date();
-        const day = date.getDate();
-        const monthNumber = date.getMonth();
-        const year = date.getFullYear();
-        return `${day}-${months[monthNumber]}-${year}`
-
-    }
-    function addPost(post) {
-        // this id system is imperfect since it can assign duplicated ids, at this stage of development this is ignored
-        if (!post.id) {
-            post.id = new Date().getMilliseconds().toString();
-        }
-
-        // the post ids fetched from the api are not strings, so we need to convert them
-        post.id = post.id.toString();
-
-        // this is so that "load posts" doesn't load posts with that were already fetched
-        if (postsList.some(elem => elem.id === post.id)) {return}
-
-        post.date = getCurrentDate();
-        setPostsList(prev => [...prev, post]);
+    async function addPost(data) {
+        const postToSend = {...data}
+        postToSend.posted_by = user.id;
+        console.log(postToSend);
+        await fetch(`${process.env.REACT_APP_API_URL}/posts`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(postToSend)})
     }
 
-    function deletePost(id) {
-        setPostsList(postsList.filter(post => post.id !== id));
+    async function deletePost(id) {
+        await fetch(`${process.env.REACT_APP_API_URL}/posts/${id}`, {method: "DELETE"}).then(() => alert(`success! post ${id} deleted!`));
     }
 
-    async function loadPosts() {
-        const postsResponse = await fetch('https://jsonplaceholder.typicode.com/posts/');
-        const postsData = await postsResponse.json();
-        await Promise.all(postsData.map(async post => {
-            addPost(post)}
-        ));
-    }
-
-    const value = {postsList, addPost, deletePost, getPostById, imageFile, setNewImage, loadPosts}
+    const value = {addPost, deletePost, getPostById, imageURL,
+        setNewImage, pagination, setPagination}
 
     return (
         <BlogPostsContext.Provider value={value}>

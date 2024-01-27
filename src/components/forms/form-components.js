@@ -16,55 +16,55 @@ export function Textarea({register, name, errors, ...rest}) {
 
     return (
         <>
-        <textarea {...register(name, {required: `must enter ${name}`})} {...rest} style={errors[name] && {borderColor:"red"}}/>
+            <textarea {...register(name, {required: `must enter ${name}`})} {...rest} style={errors[name] && {borderColor:"red"}}/>
             {errors[name] && <span style={{color:"red"}}>{errors[name].message}</span>}
         </>
     )
 }
 
 export function ImageInput({register, name, ...rest}) {
-    const {imageFile, setNewImage} = useContext(BlogPostsContext);
+    const {imageURL, setNewImage} = useContext(BlogPostsContext);
 
     function onImageChange(evt) {
-        const currentImage = evt.target.files[0];
+        const currentImage = URL.createObjectURL(evt.target.files[0]);
         setNewImage(currentImage);
     }
 
     return (
         <>
             <input type="file" accept="image/*" {...register(name)} {...rest} onChange={onImageChange}/>
-            {imageFile && (
-                    <>
-                        <div className={"preview-image-container"}>
-                            <img src={URL.createObjectURL(imageFile)} alt={"preview"} width={200}/>
-                        </div>
-                        <button onClick={() => setNewImage(null)}>remove photo</button>
-                    </>
+            {imageURL && (
+                <>
+                    <div className={"preview-image-container"}>
+                        <img src={imageURL} alt={"preview"} width={200}/>
+                    </div>
+                    <button onClick={() => setNewImage(null)}>remove photo</button>
+                </>
             )}
         </>
     )
 }
 
 export function DropdownSelectPostById({register, name, options, setSelectedPost, ...rest}) {
-    const {postsList, getPostById, setNewImage} = useContext(BlogPostsContext);
+    const {posts, getPostById, setNewImage} = useContext(BlogPostsContext);
 
-    function updateSelectedPost(evt) {
+    async function updateSelectedPost(evt) {
 
         // the empty string corresponds to the value of the "Select Post" option, which we make dysfunctional
         if (evt.target.value === "") {
             return;
         }
 
-        const selectedPostFromDropdown = getPostById(evt.target.value);
-
+        const selectedPostFromDropdown = await getPostById(evt.target.value);
+        console.log(selectedPostFromDropdown);
         setSelectedPost(selectedPostFromDropdown);
-        setNewImage(selectedPostFromDropdown.image);
+        setNewImage(selectedPostFromDropdown.image_url);
     }
 
     return (
         <select {...register(name)} {...rest} onChangeCapture={updateSelectedPost}>
             <option value={""}>Select Post</option>
-            {postsList.map((post) => (
+            {posts.list.map((post) => (
                 <option value={post.id}>{post.title}</option>
             ))}
         </select>

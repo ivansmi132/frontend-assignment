@@ -45,5 +45,6 @@ export const router = createBrowserRouter([
             }
 
         ]
-    }
+    },
+    {basename: "http://localhost:3000"}
 ]);
