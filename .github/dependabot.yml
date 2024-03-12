@@ -11,4 +11,5 @@ updates:
       interval: "weekly"
     groups: 
       react:
-        patterns: '*'
+        patterns: 
+          - "*"
